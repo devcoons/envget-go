@@ -18,12 +18,17 @@ import (
 //
 // For file reading, whitespace is trimmed from both the path and content.
 func GetValueFromFileOrEnv[T any](envVariable string, defaultValue T) T {
-	if path := strings.TrimSpace(os.Getenv(envVariable + "_FILE")); path != "" {
-		if b, err := os.ReadFile(path); err == nil {
-			return convertEnvValue(string(b), defaultValue)
+	if pathf := strings.TrimSpace(os.Getenv(envVariable + "_FILE")); pathf != "" {
+		if bf, errf := os.ReadFile(pathf); errf == nil {
+			return convertEnvValue(string(bf), defaultValue)
 		}
 	}
 
+	if path := strings.TrimSpace(os.Getenv(envVariable)); path != "" {
+		if b, err := os.ReadFile(path); err == nil {
+			return convertEnvValue(string(b), defaultValue)
+		}
+	}	
 	if raw, ok := os.LookupEnv(envVariable); ok {
 		return convertEnvValue(raw, defaultValue)
 	}
